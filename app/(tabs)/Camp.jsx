@@ -1,20 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
 import { ScrollView, View, Text, Image, Alert } from 'react-native';
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
 import { images } from '../../constants';
-import FormField from '../../components/FormField';
-import CustomButton from '../../components/CustomButton';
-import { Link } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
+import { fetchActiveCamps } from '../../api/bloodcamp';
 
-export default function BloodBankCamp({ navigation }) {
-  const camps = [
-    { date: '03 August 2024', location: 'Faculty of Science, University of Jaffna.' },
-    { date: '08 August 2024', location: 'Thellipalai Hospital' },
-    { date: '20 August 2024', location: 'Jaffna Hospital' },
-    { date: '28 August 2024', location: 'Jaffna Hospital' },
-  ];
+export default function BloodBankCamp() {
+  const [camps, setCamps] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadCamps = async () => {
+    setLoading(true);
+    try {
+      const activeCamps = await fetchActiveCamps(); // Call the API function
+      setCamps(activeCamps);
+    } catch (err) {
+      Alert.alert('Error', err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCamps();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -34,23 +49,27 @@ export default function BloodBankCamp({ navigation }) {
           width: '100%',
         }}
       >
-        <Text style={{ fontSize: 36, fontWeight: 'bold', textAlign: 'left', color: '#FFFFFF' ,padding:15}}>
-            <Text style={{ color: '#FD0000' }}>
-                Blood Bank Camp
-            </Text>
+        <Text
+          style={{
+            fontSize: 36,
+            fontWeight: 'bold',
+            textAlign: 'left',
+            color: '#FFFFFF',
+            padding: 15,
+          }}
+        >
+          <Text style={{ color: '#FD0000' }}>Blood Bank Camp</Text>
         </Text>
-        <Text style={{ fontSize: 18, fontWeight: '500', textAlign: 'right', color: '#111111',}}>
-            Near You.........
-         </Text>
-         <Text> {""}</Text>
+        <Text style={{ fontSize: 18, fontWeight: '500', textAlign: 'right', color: '#111111' }}>
+          Near You...
+        </Text>
         <Image
-            source={images.profile}
-            style={{ maxWidth: 380, width: '100%', height: 180 }}
-            resizeMode="contain"
+          source={images.profile}
+          style={{ maxWidth: 380, width: '100%', height: 180 }}
+          resizeMode="contain"
         />
-
-        <Text> {""}</Text>
-        <Text> {""}</Text>
+        <Text>{" "}</Text>
+        <Text>{" "}</Text>
 
         {camps.map((camp, index) => (
           <View
@@ -79,7 +98,6 @@ export default function BloodBankCamp({ navigation }) {
                 <Text style={{ fontSize: 14, color: '#000' }}>{camp.location}</Text>
               </View>
             </View>
-           
           </View>
         ))}
       </View>

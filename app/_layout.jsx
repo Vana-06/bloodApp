@@ -2,7 +2,8 @@ import { StyleSheet, Text, View, useColorScheme } from 'react-native';
 import { SplashScreen, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
-
+import AuthProvider from '../providers/AuthProvider';
+import QueryProvider from '../providers/QueryProvider';
 SplashScreen.preventAutoHideAsync();
 
 const RooyLayout = () => {
@@ -32,7 +33,8 @@ const RooyLayout = () => {
 
   
   return(
-
+    <AuthProvider>
+      <QueryProvider>
     <Stack>
       <Stack.Screen name="index" options={{ headerShown:false }} />
 
@@ -43,7 +45,10 @@ const RooyLayout = () => {
       <Stack.Screen name="profile" options={{ headerShown:false }} />
 
     </Stack>
-
+    </QueryProvider>
+    </AuthProvider>
+  
+   
   ) 
 }
 
